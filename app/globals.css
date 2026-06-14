@@ -29,3 +29,25 @@ body {
 .link-open:hover {
   color: var(--accent);
 }
+
+.folder-item .folder-count {
+  transition: opacity 0.15s ease;
+}
+
+.folder-item:hover .folder-count {
+  opacity: 0;
+}
+
+.folder-item .delete-btn {
+  opacity: 0;
+  color: var(--text-sub);
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.folder-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  color: #EB5757;
+}
