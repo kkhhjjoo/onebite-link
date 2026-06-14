@@ -1,4 +1,5 @@
 import Link from "next/link"
+import NewFolderButton from "@/components/NewFolderButton"
 
 export default function Header() {
   return (
@@ -6,13 +7,16 @@ export default function Header() {
       <Link href="/" className="text-base font-semibold text-[var(--text)] tracking-tight">
         한입 링크
       </Link>
-      <Link
-        href="/new"
-        className="flex items-center gap-1 px-4 py-2 bg-[var(--accent)] text-white text-sm font-medium rounded-[6px] hover:bg-[var(--accent-hover)] transition-colors"
-      >
-        <span className="text-base leading-none">+</span>
-        새 링크
-      </Link>
+      <div className="flex items-center gap-2">
+        <NewFolderButton />
+        <Link
+          href="/new"
+          className="flex items-center gap-1 px-4 py-2 bg-[var(--accent)] text-white text-sm font-medium rounded-[6px] hover:bg-[var(--accent-hover)] transition-colors"
+        >
+          <span className="text-base leading-none">+</span>
+          새 링크
+        </Link>
+      </div>
     </header>
   )
 }

@@ -1,7 +1,12 @@
+"use client"
+
 import Link from "next/link"
-import { folders, links } from "@/lib/data"
+import { links } from "@/lib/data"
+import { useFolders } from "@/context/FolderContext"
 
 export default function Sidebar() {
+  const { folders } = useFolders()
+
   return (
     <aside className="w-56 shrink-0 min-h-full bg-[var(--bg)] border-r border-[var(--border)] px-3 py-4">
       <Link
