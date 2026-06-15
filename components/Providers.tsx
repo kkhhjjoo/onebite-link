@@ -5,6 +5,7 @@ import { LinkProvider } from "@/context/LinkContext"
 import FolderModal from "@/components/FolderModal"
 import EditFolderModal from "@/components/EditFolderModal"
 import DeleteFolderModal from "@/components/DeleteFolderModal"
+import DeleteLinkModal from "@/components/DeleteLinkModal"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -14,6 +15,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <FolderModal />
         <EditFolderModal />
         <DeleteFolderModal />
+        <DeleteLinkModal />
       </LinkProvider>
     </FolderProvider>
   )
