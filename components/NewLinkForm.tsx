@@ -1,21 +1,53 @@
 "use client"
 
 import { useState } from "react"
-
-const folders = ["개발", "디자인", "유튜브", "블로그", "뉴스"]
+import { useRouter } from "next/navigation"
+import { useFolders } from "@/context/FolderContext"
+import { useLinks } from "@/context/LinkContext"
 
 export default function NewLinkForm() {
+  const router = useRouter()
+  const { folders } = useFolders()
+  const { addLink } = useLinks()
+
   const [url, setUrl] = useState("")
-  const [folder, setFolder] = useState("")
+  const [folderId, setFolderId] = useState<number | "">("")
+  const [loading, setLoading] = useState(false)
 
-  const isValid = url.trim() !== "" && folder !== ""
+  const isValid = url.trim() !== "" && folderId !== ""
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isValid) return
-    alert(`저장 완료!\nURL: ${url}\n폴더: ${folder}`)
-    setUrl("")
-    setFolder("")
+    if (!isValid || loading) return
+
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/og?url=${encodeURIComponent(url)}`)
+      const data = await res.json()
+
+      addLink({
+        url,
+        title: data.title || url,
+        description: data.description || "",
+        thumbnail: data.thumbnail ?? null,
+        favicon: data.favicon || "",
+        folderId: folderId as number,
+      })
+
+      router.push("/")
+    } catch {
+      addLink({
+        url,
+        title: url,
+        description: "",
+        thumbnail: null,
+        favicon: "",
+        folderId: folderId as number,
+      })
+      router.push("/")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -34,23 +66,23 @@ export default function NewLinkForm() {
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-[var(--text)]">폴더 선택</label>
         <select
-          value={folder}
-          onChange={(e) => setFolder(e.target.value)}
+          value={folderId}
+          onChange={(e) => setFolderId(e.target.value === "" ? "" : Number(e.target.value))}
           className="w-full px-3 py-2 border border-[var(--border)] rounded-[6px] text-sm text-[var(--text)] bg-[var(--bg-card)] focus:outline-none focus:border-[var(--accent)] transition-colors"
         >
           <option value="" disabled>폴더를 선택하세요</option>
           {folders.map((f) => (
-            <option key={f} value={f}>{f}</option>
+            <option key={f.id} value={f.id}>{f.name}</option>
           ))}
         </select>
       </div>
 
       <button
         type="submit"
-        disabled={!isValid}
+        disabled={!isValid || loading}
         className="mt-1 w-full py-2.5 bg-[var(--accent)] text-white text-sm font-semibold rounded-[6px] hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        저장
+        {loading ? "저장 중..." : "저장"}
       </button>
     </form>
   )
