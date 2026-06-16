@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { links } from "@/lib/data"
 import { useFolders } from "@/context/FolderContext"
 
 function PencilIcon() {
@@ -34,9 +33,6 @@ export default function Sidebar() {
         className="w-full flex items-center justify-between px-3 py-2 rounded-[6px] bg-[var(--accent)] text-white text-sm font-semibold mb-4"
       >
         <span>전체</span>
-        <span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">
-          {links.length}
-        </span>
       </Link>
 
       <p className="text-xs text-[var(--text-sub)] font-medium uppercase tracking-wider px-3 mb-2">
@@ -55,9 +51,6 @@ export default function Sidebar() {
                 <span className="truncate">{folder.name}</span>
               </Link>
               <div className="relative flex items-center justify-end w-10 shrink-0">
-                <span className="absolute right-0 text-xs text-[var(--text-sub)] transition-opacity duration-150 group-hover:opacity-0">
-                  {folder.count}
-                </span>
                 <div className="absolute right-0 flex items-center gap-0.5 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                   <button
                     className="edit-btn p-0.5 rounded"

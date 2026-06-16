@@ -4,14 +4,14 @@ import { useState } from "react"
 import { useFolders } from "@/context/FolderContext"
 
 export default function FolderModal() {
-  const { isModalOpen, closeModal, addFolder } = useFolders()
+  const { isModalOpen, closeModal, addFolder, isAdding } = useFolders()
   const [name, setName] = useState("")
 
   if (!isModalOpen) return null
 
-  const handleSave = () => {
-    if (!name.trim()) return
-    addFolder(name.trim())
+  const handleSave = async () => {
+    if (!name.trim() || isAdding) return
+    await addFolder(name.trim())
     setName("")
     closeModal()
   }
@@ -49,7 +49,7 @@ export default function FolderModal() {
           </button>
           <button
             onClick={handleSave}
-            disabled={!name.trim()}
+            disabled={!name.trim() || isAdding}
             className="px-4 py-2 text-sm text-white bg-[var(--accent)] rounded-[6px] hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             저장

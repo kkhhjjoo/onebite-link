@@ -1,15 +1,16 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
-import { folders as initialFolders } from "@/lib/data"
+import { createContext, useContext, useState, useEffect } from "react"
+import { createClient } from "@/utils/supabase/client"
 
-type Folder = { id: number; name: string; count: number }
+type Folder = { id: number; name: string }
 
 type FolderContextType = {
   folders: Folder[]
-  addFolder: (name: string) => void
+  addFolder: (name: string) => Promise<void>
   updateFolder: (id: number, name: string) => void
   deleteFolder: (id: number) => void
+  isAdding: boolean
   isModalOpen: boolean
   openModal: () => void
   closeModal: () => void
@@ -24,13 +25,34 @@ type FolderContextType = {
 const FolderContext = createContext<FolderContextType | null>(null)
 
 export function FolderProvider({ children }: { children: React.ReactNode }) {
-  const [folders, setFolders] = useState<Folder[]>(initialFolders)
+  const [folders, setFolders] = useState<Folder[]>([])
+  const [isAdding, setIsAdding] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [folderToEdit, setFolderToEdit] = useState<Folder | null>(null)
   const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null)
 
-  const addFolder = (name: string) => {
-    setFolders((prev) => [...prev, { id: Date.now(), name, count: 0 }])
+  useEffect(() => {
+    const supabase = createClient()
+    supabase
+      .from("folders")
+      .select("id, name")
+      .order("created_at", { ascending: true })
+      .then(({ data }) => {
+        if (data) setFolders(data)
+      })
+  }, [])
+
+  const addFolder = async (name: string) => {
+    if (isAdding) return
+    setIsAdding(true)
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("folders")
+      .insert({ name })
+      .select("id, name")
+      .single()
+    if (data) setFolders((prev) => [...prev, data])
+    setIsAdding(false)
   }
 
   const updateFolder = (id: number, name: string) => {
@@ -47,6 +69,7 @@ export function FolderProvider({ children }: { children: React.ReactNode }) {
       addFolder,
       updateFolder,
       deleteFolder,
+      isAdding,
       isModalOpen,
       openModal: () => setIsModalOpen(true),
       closeModal: () => setIsModalOpen(false),
