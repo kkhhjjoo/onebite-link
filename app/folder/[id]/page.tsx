@@ -1,12 +1,20 @@
 import Header from "@/components/Header"
 import Sidebar from "@/components/Sidebar"
 import LinkGrid from "@/components/LinkGrid"
-import { folders } from "@/lib/data"
+import { createClient } from "@/utils/supabase/server"
+import { cookies } from "next/headers"
 
 export default async function FolderPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: idParam } = await params
   const id = parseInt(idParam, 10)
-  const folder = folders.find((f) => f.id === id)
+
+  const cookieStore = await cookies()
+  const supabase = createClient(cookieStore)
+  const { data: folder } = await supabase
+    .from("folders")
+    .select("name")
+    .eq("id", id)
+    .single()
 
   return (
     <div className="flex flex-col h-screen bg-[var(--bg)]">
@@ -18,9 +26,6 @@ export default async function FolderPage({ params }: { params: Promise<{ id: str
             <h2 className="text-lg font-bold text-[var(--text)]">
               {folder ? `📁 ${folder.name}` : "폴더"}
             </h2>
-            <p className="text-sm text-[var(--text-sub)] mt-0.5">
-              {folder ? `${folder.count}개의 링크` : ""}
-            </p>
           </div>
           <LinkGrid folderId={id} />
         </main>

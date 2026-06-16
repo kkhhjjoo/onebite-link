@@ -3,13 +3,14 @@
 import { useLinks } from "@/context/LinkContext"
 import type { Link } from "@/context/LinkContext"
 
-type LinkCardProps = Pick<Link, "id" | "title" | "url" | "description" | "favicon" | "thumbnail"> & {
+type LinkCardProps = Pick<Link, "id" | "title" | "url" | "description" | "thumbnail_url"> & {
   folder: string
 }
 
-export default function LinkCard({ id, title, url, description, folder, favicon, thumbnail }: LinkCardProps) {
+export default function LinkCard({ id, title, url, description, folder, thumbnail_url }: LinkCardProps) {
   const { openEditModal, openDeleteModal, links } = useLinks()
   const domain = new URL(url).hostname.replace("www.", "")
+  const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
 
   const getLink = () => links.find((l) => l.id === id)
 
@@ -52,15 +53,15 @@ export default function LinkCard({ id, title, url, description, folder, favicon,
         </button>
       </div>
 
-      {thumbnail && (
+      {thumbnail_url && (
         <div className="w-full h-36 overflow-hidden shrink-0">
-          <img src={thumbnail} alt="" className="w-full h-full object-cover" />
+          <img src={thumbnail_url} alt="" className="w-full h-full object-cover" />
         </div>
       )}
       <div className="flex flex-col flex-1 justify-between p-4">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <img src={favicon} alt="" width={14} height={14} className="rounded-sm shrink-0" />
+            <img src={faviconUrl} alt="" width={14} height={14} className="rounded-sm shrink-0" />
             <span className="text-xs text-[var(--text-sub)] truncate">{domain}</span>
           </div>
           <h3 className="text-sm font-semibold text-[var(--text)] mb-1.5 line-clamp-2 leading-snug">

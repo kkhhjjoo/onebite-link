@@ -14,9 +14,9 @@ export default function EditLinkModal() {
 
   useEffect(() => {
     if (linkToEdit) {
-      setTitle(linkToEdit.title)
-      setDescription(linkToEdit.description)
-      setFolderId(linkToEdit.folderId)
+      setTitle(linkToEdit.title ?? "")
+      setDescription(linkToEdit.description ?? "")
+      setFolderId(linkToEdit.folder_id ?? 0)
     }
   }, [linkToEdit])
 
@@ -26,7 +26,7 @@ export default function EditLinkModal() {
 
   const handleSave = () => {
     if (!isValid) return
-    updateLink(linkToEdit.id, { title: title.trim(), description: description.trim(), folderId })
+    updateLink(linkToEdit.id, { title: title.trim(), description: description.trim(), folder_id: folderId })
     closeEditModal()
   }
 

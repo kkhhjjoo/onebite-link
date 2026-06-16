@@ -25,24 +25,22 @@ export default function NewLinkForm() {
       const res = await fetch(`/api/og?url=${encodeURIComponent(url)}`)
       const data = await res.json()
 
-      addLink({
+      await addLink({
         url,
         title: data.title || url,
-        description: data.description || "",
-        thumbnail: data.thumbnail ?? null,
-        favicon: data.favicon || "",
-        folderId: folderId as number,
+        description: data.description || null,
+        thumbnail_url: data.thumbnail ?? null,
+        folder_id: folderId as number,
       })
 
       router.push("/")
     } catch {
-      addLink({
+      await addLink({
         url,
         title: url,
-        description: "",
-        thumbnail: null,
-        favicon: "",
-        folderId: folderId as number,
+        description: null,
+        thumbnail_url: null,
+        folder_id: folderId as number,
       })
       router.push("/")
     } finally {

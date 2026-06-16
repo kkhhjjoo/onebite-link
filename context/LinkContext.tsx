@@ -1,22 +1,22 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
-import { links as initialLinks } from "@/lib/data"
+import { createContext, useContext, useState, useEffect } from "react"
+import { createClient } from "@/utils/supabase/client"
 
 export type Link = {
   id: number
-  title: string
   url: string
-  description: string
-  folderId: number
-  favicon: string
-  thumbnail?: string | null
+  title: string | null
+  description: string | null
+  thumbnail_url: string | null
+  folder_id: number | null
+  created_at: string
 }
 
 type LinkContextType = {
   links: Link[]
-  addLink: (link: Omit<Link, "id">) => void
-  updateLink: (id: number, changes: Pick<Link, "title" | "description" | "folderId">) => void
+  addLink: (link: Omit<Link, "id" | "created_at">) => Promise<void>
+  updateLink: (id: number, changes: Pick<Link, "title" | "description" | "folder_id">) => void
   deleteLink: (id: number) => void
   linkToEdit: Link | null
   openEditModal: (link: Link) => void
@@ -29,15 +29,32 @@ type LinkContextType = {
 const LinkContext = createContext<LinkContextType | null>(null)
 
 export function LinkProvider({ children }: { children: React.ReactNode }) {
-  const [links, setLinks] = useState<Link[]>(initialLinks)
+  const [links, setLinks] = useState<Link[]>([])
   const [linkToEdit, setLinkToEdit] = useState<Link | null>(null)
   const [linkToDelete, setLinkToDelete] = useState<Link | null>(null)
 
-  const addLink = (link: Omit<Link, "id">) => {
-    setLinks((prev) => [...prev, { ...link, id: Date.now() }])
+  useEffect(() => {
+    const supabase = createClient()
+    supabase
+      .from("links")
+      .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (data) setLinks(data)
+      })
+  }, [])
+
+  const addLink = async (link: Omit<Link, "id" | "created_at">) => {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("links")
+      .insert(link)
+      .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+      .single()
+    if (data) setLinks((prev) => [data, ...prev])
   }
 
-  const updateLink = (id: number, changes: Pick<Link, "title" | "description" | "folderId">) => {
+  const updateLink = (id: number, changes: Pick<Link, "title" | "description" | "folder_id">) => {
     setLinks((prev) => prev.map((l) => l.id === id ? { ...l, ...changes } : l))
   }
 
