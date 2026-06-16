@@ -7,8 +7,8 @@ export default function DeleteFolderModal() {
 
   if (!folderToDelete) return null
 
-  const handleConfirm = () => {
-    deleteFolder(folderToDelete.id)
+  const handleConfirm = async () => {
+    await deleteFolder(folderToDelete.id)
     closeDeleteModal()
   }
 
