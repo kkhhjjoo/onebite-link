@@ -13,9 +13,9 @@ export default function EditFolderModal() {
 
   if (!folderToEdit) return null
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) return
-    updateFolder(folderToEdit.id, name.trim())
+    await updateFolder(folderToEdit.id, name.trim())
     closeEditModal()
   }
 
