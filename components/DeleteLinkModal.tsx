@@ -7,8 +7,8 @@ export default function DeleteLinkModal() {
 
   if (!linkToDelete) return null
 
-  const handleConfirm = () => {
-    deleteLink(linkToDelete.id)
+  const handleConfirm = async () => {
+    await deleteLink(linkToDelete.id)
     closeDeleteModal()
   }
 

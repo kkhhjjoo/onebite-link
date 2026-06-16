@@ -17,7 +17,7 @@ type LinkContextType = {
   links: Link[]
   addLink: (link: Omit<Link, "id" | "created_at">) => Promise<void>
   updateLink: (id: number, changes: Pick<Link, "title" | "description" | "folder_id">) => Promise<void>
-  deleteLink: (id: number) => void
+  deleteLink: (id: number) => Promise<void>
   linkToEdit: Link | null
   openEditModal: (link: Link) => void
   closeEditModal: () => void
@@ -60,7 +60,9 @@ export function LinkProvider({ children }: { children: React.ReactNode }) {
     setLinks((prev) => prev.map((l) => l.id === id ? { ...l, ...changes } : l))
   }
 
-  const deleteLink = (id: number) => {
+  const deleteLink = async (id: number) => {
+    const supabase = createClient()
+    await supabase.from("links").delete().eq("id", id)
     setLinks((prev) => prev.filter((l) => l.id !== id))
   }
 
