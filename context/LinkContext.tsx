@@ -16,7 +16,7 @@ export type Link = {
 type LinkContextType = {
   links: Link[]
   addLink: (link: Omit<Link, "id" | "created_at">) => Promise<void>
-  updateLink: (id: number, changes: Pick<Link, "title" | "description" | "folder_id">) => void
+  updateLink: (id: number, changes: Pick<Link, "title" | "description" | "folder_id">) => Promise<void>
   deleteLink: (id: number) => void
   linkToEdit: Link | null
   openEditModal: (link: Link) => void
@@ -54,7 +54,9 @@ export function LinkProvider({ children }: { children: React.ReactNode }) {
     if (data) setLinks((prev) => [data, ...prev])
   }
 
-  const updateLink = (id: number, changes: Pick<Link, "title" | "description" | "folder_id">) => {
+  const updateLink = async (id: number, changes: Pick<Link, "title" | "description" | "folder_id">) => {
+    const supabase = createClient()
+    await supabase.from("links").update(changes).eq("id", id)
     setLinks((prev) => prev.map((l) => l.id === id ? { ...l, ...changes } : l))
   }
 

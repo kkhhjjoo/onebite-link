@@ -24,9 +24,9 @@ export default function EditLinkModal() {
 
   const isValid = title.trim() !== "" && folderId !== 0
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isValid) return
-    updateLink(linkToEdit.id, { title: title.trim(), description: description.trim(), folder_id: folderId })
+    await updateLink(linkToEdit.id, { title: title.trim(), description: description.trim(), folder_id: folderId })
     closeEditModal()
   }
 
