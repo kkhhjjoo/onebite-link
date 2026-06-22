@@ -94,6 +94,12 @@ export default function Sidebar() {
           </svg>
           로그아웃
         </button>
+        <Link
+          href="/privacy"
+          className="block px-3 py-1.5 text-xs text-[var(--text-sub)] opacity-60 hover:opacity-100 transition-opacity"
+        >
+          개인정보 처리방침
+        </Link>
       </div>
     </aside>
   )

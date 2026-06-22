@@ -40,8 +40,9 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [agreed, setAgreed] = useState(false)
 
-  const isDisabled = !email || !password || !confirmPassword || loading
+  const isDisabled = !email || !password || !confirmPassword || !agreed || loading
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,6 +96,21 @@ export default function RegisterPage() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full px-4 py-2.5 rounded-[6px] border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] text-sm placeholder:text-[var(--placeholder)] outline-none focus:border-[var(--accent)] transition-colors"
           />
+          <label className="flex items-start gap-2 mt-1 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 shrink-0 accent-[var(--accent)]"
+            />
+            <span className="text-sm text-[var(--text-sub)]">
+              [필수]{" "}
+              <Link href="/privacy" target="_blank" className="text-[var(--accent)] underline">
+                개인정보 수집·이용
+              </Link>
+              에 동의합니다.
+            </span>
+          </label>
           <button
             type="submit"
             disabled={isDisabled}
