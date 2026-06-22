@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/utils/supabase/client"
@@ -41,6 +42,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const isDisabled = !email || !password || loading
+
+  const handleKakaoLogin = async () => {
+    const supabase = createClient()
+    await supabase.auth.signInWithOAuth({
+      provider: "kakao",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -90,6 +101,26 @@ export default function LoginPage() {
             {loading ? "로그인 중..." : "로그인"}
           </button>
         </form>
+
+        <div className="mt-4 flex items-center gap-3">
+          <div className="flex-1 h-px bg-[var(--border)]" />
+          <span className="text-xs text-[var(--text-sub)]">또는</span>
+          <div className="flex-1 h-px bg-[var(--border)]" />
+        </div>
+
+        <button
+          type="button"
+          onClick={handleKakaoLogin}
+          className="mt-3 w-full flex justify-center"
+        >
+          <Image
+            src="/kakao_login_large_wide.png"
+            alt="카카오 로그인"
+            width={300}
+            height={45}
+            className="w-full h-auto"
+          />
+        </button>
 
         <p className="mt-5 text-center text-sm text-[var(--text-sub)]">
           <Link href="/forgot-password" className="text-[var(--accent)] font-medium hover:underline">
